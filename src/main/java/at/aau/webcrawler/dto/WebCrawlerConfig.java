@@ -1,4 +1,6 @@
-package at.aau.webcrawler;
+package at.aau.webcrawler.dto;
+
+import at.aau.webcrawler.WebCrawlerVerifier;
 
 public class WebCrawlerConfig {
   private final String url;

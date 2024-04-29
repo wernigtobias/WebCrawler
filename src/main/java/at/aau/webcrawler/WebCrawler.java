@@ -1,73 +1,66 @@
 package at.aau.webcrawler;
 
-import at.aau.services.WebService;
+import at.aau.webcrawler.dto.WebCrawlerConfig;
+import at.aau.webcrawler.dto.WebCrawlerResults;
+import at.aau.webcrawler.dto.Webpage;
 
-import java.io.File;
-import java.util.HashSet;
 import java.util.Set;
 
-public class WebCrawler {
+/**
+ * Interface representing a web crawler.
+ */
+public interface WebCrawler {
 
-  private final WebCrawlerConfig rootConfiguration;
-  private final WebCrawlerOutputFileWriter webCrawlerOutputFileWriter;
-  private final Set<String> crawledLinks;
+  /**
+   * Starts the web crawler.
+   */
+  void run();
 
-  public WebCrawler(WebCrawlerConfig config) {
-    this.rootConfiguration = config;
-    this.webCrawlerOutputFileWriter = new WebCrawlerOutputFileWriter(new File("output.md"));
-    this.crawledLinks = new HashSet<>();
-  }
+  /**
+   * Crawls the web with the given configuration.
+   *
+   * @param configuration The configuration for the web crawling.
+   */
+  void crawl(WebCrawlerConfig configuration);
 
-  public void run() {
-    crawl(rootConfiguration);
-    webCrawlerOutputFileWriter.writeToOutputFile();
-  }
+  /**
+   * Processes a single link found during web crawling.
+   *
+   * @param link          The URL of the link to be processed.
+   * @param configuration The configuration for the web crawling.
+   */
+  void processLink(String link, WebCrawlerConfig configuration);
 
-  private void crawl(WebCrawlerConfig configuration) {
-    System.out.println("[Crawler] URL: " + configuration.getUrl() + " Depth: " + configuration.getDepth());
-    Webpage webpage = loadWebpage(configuration.getUrl());
-    if (webpage != null) {
-      WebCrawlerResults result = processWebpage(webpage, configuration);
-      saveResult(result, configuration);
-      processLinks(webpage.getLinks(), configuration);
-    }
-  }
+  /**
+   * Loads a webpage from the given URL.
+   *
+   * @param url The URL of the webpage to load.
+   * @return The loaded webpage.
+   */
+  Webpage loadWebpage(String url);
 
-  Webpage loadWebpage(String url) {
-    crawledLinks.add(url);
-    return WebService.loadWebpage(url);
-  }
+  /**
+   * Processes a webpage and generates results based on the configuration.
+   *
+   * @param webpage       The webpage to process.
+   * @param configuration The configuration for processing the webpage.
+   * @return The results generated from processing the webpage.
+   */
+  WebCrawlerResults processWebpage(Webpage webpage, WebCrawlerConfig configuration);
 
-  WebCrawlerResults processWebpage(Webpage webpage, WebCrawlerConfig configuration) {
-    WebCrawlerResults result = new WebCrawlerResults(configuration);
-    result.setHeadings(webpage.getHeadings());
-    result.setLinks(webpage.getLinks());
-    return result;
-  }
+  /**
+   * Saves the results of processing a webpage.
+   *
+   * @param result        The results to save.
+   * @param configuration The configuration for the web crawling.
+   */
+  void saveResult(WebCrawlerResults result, WebCrawlerConfig configuration);
 
-  void saveResult(WebCrawlerResults result, WebCrawlerConfig configuration) {
-    int currentDepth = rootConfiguration.getDepth() - configuration.getDepth();
-    if (currentDepth == 0) {
-      webCrawlerOutputFileWriter.setBaseReport(result);
-    } else {
-      webCrawlerOutputFileWriter.addNestedReport(result, currentDepth);
-    }
-  }
-
-  void processLinks(Set<String> links, WebCrawlerConfig configuration) {
-    if (configuration.getDepth() <= 0) {
-      return;
-    }
-    for (String link : links) {
-      processLink(link, configuration);
-    }
-  }
-
-  void processLink(String link, WebCrawlerConfig configuration) {
-    int newDepth = configuration.getDepth() - 1;
-    WebCrawlerConfig nestedConfiguration = new WebCrawlerConfig(link, newDepth, configuration.getDomains());
-    if (!crawledLinks.contains(link) && nestedConfiguration.verifyConfig()) {
-      crawl(nestedConfiguration);
-    }
-  }
+  /**
+   * Processes all links found on a webpage.
+   *
+   * @param links         The set of links to process.
+   * @param configuration The configuration for the web crawling.
+   */
+  void processLinks(Set<String> links, WebCrawlerConfig configuration);
 }

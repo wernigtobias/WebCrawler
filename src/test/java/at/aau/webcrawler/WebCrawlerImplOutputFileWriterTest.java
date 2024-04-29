@@ -1,5 +1,7 @@
 package at.aau.webcrawler;
 
+import at.aau.webcrawler.dto.WebCrawlerConfig;
+import at.aau.webcrawler.dto.WebCrawlerResults;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,12 +12,12 @@ import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class WebCrawlerOutputFileWriterTest {
+public class WebCrawlerImplOutputFileWriterTest {
 
-  private WebCrawlerOutputFileWriter writer;
+  private WebCrawlerOutputFileWriterImpl writer;
   @BeforeEach
   void init() {
-    writer = new WebCrawlerOutputFileWriter(new File("test.txt"));
+    writer = new WebCrawlerOutputFileWriterImpl(new File("test.txt"));
   }
 
   @Test

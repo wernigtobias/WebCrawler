@@ -1,5 +1,6 @@
 package at.aau.webcrawler;
 
+import at.aau.webcrawler.dto.Webpage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;

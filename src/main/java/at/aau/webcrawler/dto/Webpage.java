@@ -1,4 +1,4 @@
-package at.aau.webcrawler;
+package at.aau.webcrawler.dto;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -19,7 +19,6 @@ public class Webpage {
 
   public Set<String> getLinks() {
     Elements linkElements = document.select("a");
-    Set<String> links = linkElements.stream().map(element -> element.attr("href")).collect(Collectors.toSet());
-    return links;
+    return linkElements.stream().map(element -> element.attr("href")).collect(Collectors.toSet());
   }
 }

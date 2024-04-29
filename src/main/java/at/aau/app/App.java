@@ -1,7 +1,7 @@
 package at.aau.app;
 
-import at.aau.webcrawler.WebCrawlerConfig;
-import at.aau.webcrawler.WebCrawler;
+import at.aau.webcrawler.dto.WebCrawlerConfig;
+import at.aau.webcrawler.WebCrawlerImpl;
 
 import java.util.Scanner;
 
@@ -25,7 +25,7 @@ public class App {
     private static void initializeCrawlerAndRun(String url, int depth, String[] domains) {
         WebCrawlerConfig crawlerConfig = new WebCrawlerConfig(url, depth, domains);
         if(crawlerConfig.verifyConfig()){
-            WebCrawler crawler = new WebCrawler(crawlerConfig);
+            WebCrawlerImpl crawler = new WebCrawlerImpl(crawlerConfig);
             crawler.run();
         }
     }

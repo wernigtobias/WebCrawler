@@ -1,6 +1,6 @@
 package at.aau.services;
 
-import at.aau.webcrawler.Webpage;
+import at.aau.webcrawler.dto.Webpage;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
