@@ -43,7 +43,7 @@ public class App {
     private static String[] readDomains(Scanner scanner) {
         System.out.println("Enter domain(s) (comma-separated if multiple):");
         scanner.nextLine();
-        return scanner.nextLine().split(",");
+        return scanner.nextLine().replace(" ", "").split(",");
     }
 
 }

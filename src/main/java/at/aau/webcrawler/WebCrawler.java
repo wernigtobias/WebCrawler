@@ -24,7 +24,7 @@ public class WebCrawler {
   }
 
   private void crawl(WebCrawlerConfig configuration) {
-    System.out.println("Crawling " + configuration.getUrl() + " with depth " + configuration.getDepth());
+    System.out.println("[Crawler] URL: " + configuration.getUrl() + " Depth: " + configuration.getDepth());
     Webpage webpage = loadWebpage(configuration.getUrl());
     if (webpage != null) {
       WebCrawlerResults result = processWebpage(webpage, configuration);
