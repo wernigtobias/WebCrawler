@@ -1,11 +1,8 @@
 package at.aau.webcrawler;
 
-import org.jsoup.HttpStatusException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import at.aau.services.WebService;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,38 +25,28 @@ public class WebCrawler {
 
   private void crawl(WebCrawlerConfig configuration) {
     System.out.println("Crawling " + configuration.getUrl() + " with depth " + configuration.getDepth());
-
-    Webpage webpage= getWebsite(configuration);
-    if (webpage == null) {
-      return;
+    Webpage webpage = loadWebpage(configuration.getUrl());
+    if (webpage != null) {
+      WebCrawlerResults result = processWebpage(webpage, configuration);
+      saveResult(result, configuration);
+      processLinks(webpage.getLinks(), configuration);
     }
+  }
+
+  Webpage loadWebpage(String url) {
+    crawledLinks.add(url);
+    return WebService.loadWebpage(url);
+  }
+
+  WebCrawlerResults processWebpage(Webpage webpage, WebCrawlerConfig configuration) {
     WebCrawlerResults result = new WebCrawlerResults(configuration);
     result.setHeadings(webpage.getHeadings());
-    Set<String> links = webpage.getLinks();
-    result.setLinks(links);
-    saveResult(result, configuration);
-    processLinks(links, configuration);
+    result.setLinks(webpage.getLinks());
+    return result;
   }
 
-  private Webpage getWebsite(WebCrawlerConfig configuration) {
-    String url = configuration.getUrl();
-    crawledLinks.add(url);
-    try {
-      Document document = Jsoup.connect(url).get();
-      return new Webpage(document);
-    } catch (HttpStatusException e) {
-      if (e.getStatusCode() == 404) {
-        int currentDepth = getCurrentDepth(configuration);
-        webCrawlerOutputFileWriter.addBrokenLinkReport(configuration, currentDepth);
-      }
-    } catch (IOException ie) {
-      ie.printStackTrace();
-    }
-    return null;
-  }
-
-  private void saveResult(WebCrawlerResults result, WebCrawlerConfig configuration) {
-    int currentDepth = getCurrentDepth(configuration);
+  void saveResult(WebCrawlerResults result, WebCrawlerConfig configuration) {
+    int currentDepth = rootConfiguration.getDepth() - configuration.getDepth();
     if (currentDepth == 0) {
       webCrawlerOutputFileWriter.setBaseReport(result);
     } else {
@@ -67,21 +54,20 @@ public class WebCrawler {
     }
   }
 
-  private void processLinks(Set<String> links, WebCrawlerConfig configuration) {
+  void processLinks(Set<String> links, WebCrawlerConfig configuration) {
     if (configuration.getDepth() <= 0) {
       return;
     }
     for (String link : links) {
-      String[] domains = configuration.getDomains();
-      int newDepth = configuration.getDepth()-1;
-      WebCrawlerConfig nestedConfiguration = new WebCrawlerConfig(link, newDepth, domains);
-      if (!crawledLinks.contains(link) && nestedConfiguration.verifyConfig()) {
-        crawl(nestedConfiguration);
-      }
+      processLink(link, configuration);
     }
   }
 
-  private int getCurrentDepth(WebCrawlerConfig configuration) {
-    return rootConfiguration.getDepth() - configuration.getDepth();
+  void processLink(String link, WebCrawlerConfig configuration) {
+    int newDepth = configuration.getDepth() - 1;
+    WebCrawlerConfig nestedConfiguration = new WebCrawlerConfig(link, newDepth, configuration.getDomains());
+    if (!crawledLinks.contains(link) && nestedConfiguration.verifyConfig()) {
+      crawl(nestedConfiguration);
+    }
   }
 }

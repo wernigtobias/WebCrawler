@@ -1,13 +1,9 @@
 package at.aau.webcrawler;
 
-import at.aau.webcrawler.WebCrawlerVerifier;
-
-import java.util.regex.Pattern;
-
 public class WebCrawlerConfig {
-  private String url;
-  private int depth;
-  private String[] domains;
+  private final String url;
+  private final int depth;
+  private final String[] domains;
 
   public WebCrawlerConfig(String url, int depth, String[] domains) {
     this.url = url;
@@ -28,6 +24,9 @@ public class WebCrawlerConfig {
   }
 
   public boolean verifyConfig(){
+    if (url == null || domains == null) {
+      return false;
+    }
     return WebCrawlerVerifier.verifyURL(url, domains) && WebCrawlerVerifier.verifyDepth(depth) && WebCrawlerVerifier.verifyDomains(domains);
   }
 
