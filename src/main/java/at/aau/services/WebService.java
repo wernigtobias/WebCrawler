@@ -17,7 +17,7 @@ public class WebService {
         return null;
       }
     } catch (IOException ie) {
-      System.out.println("[ERROR] Failed connecting");
+      System.out.println("[ERROR] Failed connecting: " + ie.getMessage());
     }
     return null;
   }
