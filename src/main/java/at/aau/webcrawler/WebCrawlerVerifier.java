@@ -1,5 +1,7 @@
 package at.aau.webcrawler;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Pattern;
 import java.util.Arrays;
 
@@ -26,7 +28,12 @@ public class WebCrawlerVerifier {
     return Pattern.matches(DOMAIN_REGEX, domain);
   }
 
-  static boolean containsValidDomain(String url, String[] domains) {
-    return Arrays.stream(domains).anyMatch(url::contains);
+  static boolean containsValidDomain(String url, String[] domains){
+    try {
+      URL parsedUrl = new URL(url);
+      return Arrays.stream(domains).anyMatch(parsedUrl.getHost()::contains);
+    } catch (MalformedURLException e) {
+      return false;
+    }
   }
 }
