@@ -4,21 +4,14 @@ import at.aau.webcrawler.dto.WebCrawlerConfig;
 import at.aau.webcrawler.WebCrawlerImpl;
 
 import java.util.Scanner;
-
-/**
- * WebCrawler
- *
- */
 public class App {
-
+    static Scanner scanner;
     public static void main(String[] args) {
-        //Read input values for WebCrawler-Config
-        Scanner scanner = new Scanner(System.in);
-        String url = readURL(scanner);
-        int depth = readDepth(scanner);
-        String[] domains = readDomains(scanner);
+        scanner = new Scanner(System.in);
+        String url = readURL();
+        int depth = readDepth();
+        String[] domains = readDomains();
         scanner.close();
-
         initializeCrawlerAndRun(url, depth, domains);
     }
 
@@ -30,17 +23,17 @@ public class App {
         }
     }
 
-    private static String readURL(Scanner scanner) {
+    private static String readURL() {
         System.out.println("Enter URL:");
         return scanner.nextLine();
     }
 
-    private static int readDepth(Scanner scanner) {
+    private static int readDepth() {
         System.out.println("Enter depth:");
         return scanner.nextInt();
     }
 
-    private static String[] readDomains(Scanner scanner) {
+    private static String[] readDomains() {
         System.out.println("Enter domain(s) (comma-separated if multiple):");
         scanner.nextLine();
         return scanner.nextLine().replace(" ", "").split(",");
