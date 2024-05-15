@@ -5,7 +5,9 @@ import at.aau.webcrawler.WebCrawlerImpl;
 
 import java.util.Scanner;
 public class App {
+
     static Scanner scanner;
+
     public static void main(String[] args) {
         scanner = new Scanner(System.in);
         String url = readURL();
