@@ -1,7 +1,7 @@
 package at.aau.webcrawler;
 
 import at.aau.webcrawler.dto.WebCrawlerConfig;
-import at.aau.webcrawler.dto.WebCrawlerResults;
+import at.aau.webcrawler.dto.WebCrawlerPageResult;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -18,7 +18,7 @@ public class WebCrawlerOutputFileWriterImpl implements WebCrawlerOutputFileWrite
     this.outputFile = outputFile;
   }
 
-  public void setBaseReport(WebCrawlerResults webCrawlerResult) {
+  public void setBaseReport(WebCrawlerPageResult webCrawlerResult) {
     WebCrawlerConfig webCrawlerConfiguration = webCrawlerResult.getWebCrawlerConfiguration();
     appendLine("input: <a>", webCrawlerConfiguration.getUrl(), "</a>");
     appendLine("depth:", String.valueOf(webCrawlerConfiguration.getDepth()));
@@ -28,10 +28,10 @@ public class WebCrawlerOutputFileWriterImpl implements WebCrawlerOutputFileWrite
     appendHeadings(webCrawlerResult);
   }
 
-  public void addNestedReport(WebCrawlerResults nestedWebCrawlerResult, int depth) {
+  public void addNestedReport(WebCrawlerPageResult nestedWebCrawlerResult) {
     WebCrawlerConfig webCrawlerConfiguration = nestedWebCrawlerResult.getWebCrawlerConfiguration();
     String crawledUrl = webCrawlerConfiguration.getUrl();
-    appendLine(createDepthIndent(depth) + " link to <a>", crawledUrl, "</a>");
+    appendLine(createDepthIndent(webCrawlerConfiguration.getDepth()) + " link to <a>", crawledUrl, "</a>");
     appendHeadings(nestedWebCrawlerResult);
   }
 
@@ -62,19 +62,21 @@ public class WebCrawlerOutputFileWriterImpl implements WebCrawlerOutputFileWrite
     }
   }
 
-  private void appendHeadings(WebCrawlerResults webCrawlerResult) {
+  private void appendHeadings(WebCrawlerPageResult webCrawlerResult) {
     Elements headings = webCrawlerResult.getHeadings();
     for (Element heading : headings) {
-      outputFileContent.append(formatHeading(heading));
+      outputFileContent.append(formatHeading(heading, webCrawlerResult.getWebCrawlerConfiguration().getDepth()));
     }
     outputFileContent.append("\n");
   }
 
-  private String formatHeading(Element heading) {
+  private String formatHeading(Element heading, int depth) {
     StringBuilder markdownHeading = new StringBuilder();
     int headingLevel = Integer.parseInt(heading.tagName().substring(1));
     markdownHeading.append("\n");
     markdownHeading.append("#".repeat(Math.max(0, headingLevel)));
+    markdownHeading.append(" ");
+    markdownHeading.append(createDepthIndent(depth));
     markdownHeading.append(" ");
     markdownHeading.append(heading.text());
     markdownHeading.append("\n");

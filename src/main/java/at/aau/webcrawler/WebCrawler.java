@@ -1,7 +1,7 @@
 package at.aau.webcrawler;
 
 import at.aau.webcrawler.dto.WebCrawlerConfig;
-import at.aau.webcrawler.dto.WebCrawlerResults;
+import at.aau.webcrawler.dto.WebCrawlerPageResult;
 import at.aau.webcrawler.dto.Webpage;
 
 import java.util.Set;
@@ -46,7 +46,7 @@ public interface WebCrawler {
    * @param configuration The configuration for processing the webpage.
    * @return The results generated from processing the webpage.
    */
-  WebCrawlerResults processWebpage(Webpage webpage, WebCrawlerConfig configuration);
+  WebCrawlerPageResult processWebpage(Webpage webpage, WebCrawlerConfig configuration);
 
   /**
    * Saves the results of processing a webpage.
@@ -54,7 +54,7 @@ public interface WebCrawler {
    * @param result        The results to save.
    * @param configuration The configuration for the web crawling.
    */
-  void saveResult(WebCrawlerResults result, WebCrawlerConfig configuration);
+  void saveResult(WebCrawlerPageResult result, WebCrawlerConfig configuration);
 
   /**
    * Processes all links found on a webpage.

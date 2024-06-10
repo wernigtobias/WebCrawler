@@ -1,15 +1,17 @@
 package at.aau.webcrawler.dto;
 import org.jsoup.select.Elements;
+
+import java.util.List;
 import java.util.Set;
 
-public class WebCrawlerResults {
+public class WebCrawlerPageResult {
 
   private final WebCrawlerConfig webCrawlerConfig;
 
   private Elements headings;
   private Set<String> links;
 
-  public WebCrawlerResults(WebCrawlerConfig webCrawlerConfiguration) {
+  public WebCrawlerPageResult(WebCrawlerConfig webCrawlerConfiguration) {
     this.webCrawlerConfig = webCrawlerConfiguration;
   }
 

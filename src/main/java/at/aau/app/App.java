@@ -7,18 +7,19 @@ import java.util.Scanner;
 public class App {
 
     static Scanner scanner;
+    public static int maxDepth;
 
     public static void main(String[] args) {
         scanner = new Scanner(System.in);
         String url = readURL();
-        int depth = readDepth();
+        maxDepth = readDepth();
         String[] domains = readDomains();
         scanner.close();
-        initializeCrawlerAndRun(url, depth, domains);
+        initializeCrawlerAndRun(url, domains);
     }
 
-    private static void initializeCrawlerAndRun(String url, int depth, String[] domains) {
-        WebCrawlerConfig crawlerConfig = new WebCrawlerConfig(url, depth, domains);
+    private static void initializeCrawlerAndRun(String url, String[] domains) {
+        WebCrawlerConfig crawlerConfig = new WebCrawlerConfig(url, 0, domains);
         if(crawlerConfig.verifyConfig()){
             WebCrawlerImpl crawler = new WebCrawlerImpl(crawlerConfig);
             crawler.run();

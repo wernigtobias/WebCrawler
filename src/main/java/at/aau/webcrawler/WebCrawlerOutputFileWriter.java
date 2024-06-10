@@ -1,7 +1,7 @@
 package at.aau.webcrawler;
 
 import at.aau.webcrawler.dto.WebCrawlerConfig;
-import at.aau.webcrawler.dto.WebCrawlerResults;
+import at.aau.webcrawler.dto.WebCrawlerPageResult;
 
 /**
  * Interface for writing web crawler output to a file.
@@ -13,15 +13,14 @@ public interface WebCrawlerOutputFileWriter {
    *
    * @param webCrawlerResult The web crawler results to set as the base report.
    */
-  void setBaseReport(WebCrawlerResults webCrawlerResult);
+  void setBaseReport(WebCrawlerPageResult webCrawlerResult);
 
   /**
    * Adds a nested report for the web crawler results at a specified depth.
    *
    * @param nestedWebCrawlerResult The nested web crawler results to add.
-   * @param depth                  The depth of the nested report.
    */
-  void addNestedReport(WebCrawlerResults nestedWebCrawlerResult, int depth);
+  void addNestedReport(WebCrawlerPageResult nestedWebCrawlerResult);
 
   /**
    * Adds a report for a broken link encountered during crawling at a specified depth.

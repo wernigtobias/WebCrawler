@@ -1,7 +1,7 @@
 package at.aau.webcrawler;
 
 import at.aau.webcrawler.dto.WebCrawlerConfig;
-import at.aau.webcrawler.dto.WebCrawlerResults;
+import at.aau.webcrawler.dto.WebCrawlerPageResult;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ public class WebCrawlerImplOutputFileWriterTest {
   @Test
   public void testSetBaseReport() {
     WebCrawlerConfig config = new WebCrawlerConfig("http://example.com", 2, new String[]{"example.com"});
-    WebCrawlerResults results = new WebCrawlerResults(config);
+    WebCrawlerPageResult results = new WebCrawlerPageResult(config);
     results.setHeadings(new Elements('1'));
     results.setLinks(new HashSet<>());
     writer.setBaseReport(results);
@@ -33,10 +33,10 @@ public class WebCrawlerImplOutputFileWriterTest {
   @Test
   public void testAddNestedReport() {
     WebCrawlerConfig config = new WebCrawlerConfig("http://example.com/nested", 3, new String[]{"example.com"});
-    WebCrawlerResults results = new WebCrawlerResults(config);
+    WebCrawlerPageResult results = new WebCrawlerPageResult(config);
     results.setHeadings(new Elements('1'));
     results.setLinks(new HashSet<>());
-    writer.addNestedReport(results, 1);
+    writer.addNestedReport(results);
     assertEquals("--> link to <a>http://example.com/nested</a>\n\n", writer.getOutputFileContent().toString());
   }
 

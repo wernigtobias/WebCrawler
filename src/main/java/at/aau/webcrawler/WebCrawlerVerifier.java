@@ -1,5 +1,7 @@
 package at.aau.webcrawler;
 
+import at.aau.app.App;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Pattern;
@@ -14,7 +16,7 @@ public class WebCrawlerVerifier {
   }
 
   public static boolean verifyDepth(int depth) {
-    return depth > 0;
+    return depth < App.maxDepth;
   }
 
   public static boolean verifyDomains(String[] domains) {
