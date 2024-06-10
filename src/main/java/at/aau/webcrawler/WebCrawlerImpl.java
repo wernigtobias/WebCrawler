@@ -6,35 +6,58 @@ import at.aau.webcrawler.dto.WebCrawlerConfig;
 import at.aau.webcrawler.dto.WebCrawlerPageResult;
 import at.aau.webcrawler.dto.Webpage;
 
+import javax.swing.*;
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public class WebCrawlerImpl implements WebCrawler{
+public class WebCrawlerImpl {
 
-  private final WebCrawlerConfig rootConfiguration;
-  private final WebCrawlerOutputFileWriterImpl webCrawlerOutputFileWriterImpl;
   private final Set<String> crawledLinks;
+  private HashMap<String, WebCrawlerOutputFileWriterImpl> outputFileWriterHashMap;
 
-  public WebCrawlerImpl(WebCrawlerConfig config) {
-    this.rootConfiguration = config;
-    this.webCrawlerOutputFileWriterImpl = new WebCrawlerOutputFileWriterImpl(new File("output.md"));
+  public WebCrawlerImpl() {
+    this.outputFileWriterHashMap = new HashMap<>();
     this.crawledLinks = new HashSet<>();
   }
 
-  public void run() {
-    crawl(rootConfiguration);
-    webCrawlerOutputFileWriterImpl.writeToOutputFile();
+  public void run(String[] urls, String[] domains) {
+    WebCrawlerExecutor webCrawlerExecutor = new WebCrawlerExecutor();
+
+    for (String url : urls) {
+      if(!outputFileWriterHashMap.containsKey(url)) {
+        outputFileWriterHashMap.put(url, new WebCrawlerOutputFileWriterImpl(new File("output.md")));
+      }
+
+      WebCrawlerConfig webCrawlerConfig = new WebCrawlerConfig(url, 0, url, domains);
+      webCrawlerExecutor.submit(() -> crawl(webCrawlerConfig), url);
+    }
+
+    String resultOfChildren = webCrawlerExecutor.getResult();
+    StringBuilder outputFileBuilder = new StringBuilder();
+
+    for (String url : urls) {
+      outputFileBuilder.append(outputFileWriterHashMap.get(url).getOutputFileContent());
+      outputFileBuilder.append("\r\n");
+    }
+
+    WebCrawlerOutputFileWriterImpl.writeToOutputFile(outputFileBuilder, new File("output.md"));
+    webCrawlerExecutor.shutdown();
   }
 
-  public void crawl(WebCrawlerConfig configuration) {
-    System.out.println("[Crawler] URL: " + configuration.getUrl() + " Depth: " + configuration.getDepth());
+  public String crawl(WebCrawlerConfig configuration) {
+    System.out.println("[Crawler-" + Thread.currentThread().getName() + "-] URL: " + configuration.getUrl() + " Depth: " + configuration.getDepth());
+
     Webpage webpage = loadWebpage(configuration.getUrl());
     if (webpage != null) {
       WebCrawlerPageResult result = processWebpage(webpage, configuration);
       saveResult(result, configuration);
       processLinks(webpage.getLinks(), configuration);
     }
+
+    return "";
   }
 
   public Webpage loadWebpage(String url) {
@@ -51,9 +74,9 @@ public class WebCrawlerImpl implements WebCrawler{
 
   public void saveResult(WebCrawlerPageResult result, WebCrawlerConfig configuration) {
     if (configuration.getDepth() == 0 ) {
-      webCrawlerOutputFileWriterImpl.setBaseReport(result);
+      outputFileWriterHashMap.get(configuration.getRootUrl()).setBaseReport(result);
     } else {
-      webCrawlerOutputFileWriterImpl.addNestedReport(result);
+      outputFileWriterHashMap.get(configuration.getRootUrl()).addNestedReport(result);
     }
   }
 
@@ -68,7 +91,7 @@ public class WebCrawlerImpl implements WebCrawler{
 
   public void processLink(String link, WebCrawlerConfig configuration) {
     int newDepth = configuration.getDepth() + 1;
-    WebCrawlerConfig nestedConfiguration = new WebCrawlerConfig(link, newDepth, configuration.getDomains());
+    WebCrawlerConfig nestedConfiguration = new WebCrawlerConfig(link, newDepth, configuration.getRootUrl(),configuration.getDomains());
     if (!crawledLinks.contains(link) && nestedConfiguration.verifyConfig()) {
       crawl(nestedConfiguration);
     }

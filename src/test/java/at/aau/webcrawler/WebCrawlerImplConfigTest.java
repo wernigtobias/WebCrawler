@@ -11,7 +11,7 @@ public class WebCrawlerImplConfigTest {
     String url = "https://example.com";
     int depth = 2;
     String[] domains = {"example.com", "subdomain.example.com"};
-    WebCrawlerConfig config = new WebCrawlerConfig(url, depth, domains);
+    WebCrawlerConfig config = new WebCrawlerConfig(url, depth, url, domains);
     assertTrue(config.verifyConfig());
   }
 
@@ -20,7 +20,7 @@ public class WebCrawlerImplConfigTest {
     String url = "invalid-url";
     int depth = 2;
     String[] domains = {"example.com"};
-    WebCrawlerConfig config = new WebCrawlerConfig(url, depth, domains);
+    WebCrawlerConfig config = new WebCrawlerConfig(url, depth, url, domains);
     assertFalse(config.verifyConfig());
   }
 
@@ -29,7 +29,7 @@ public class WebCrawlerImplConfigTest {
     String url = "https://example.com";
     int depth = -1;
     String[] domains = {"example.com"};
-    WebCrawlerConfig config = new WebCrawlerConfig(url, depth, domains);
+    WebCrawlerConfig config = new WebCrawlerConfig(url, depth, url, domains);
     assertFalse(config.verifyConfig());
   }
 
@@ -38,7 +38,7 @@ public class WebCrawlerImplConfigTest {
     String url = "https://example.com";
     int depth = 2;
     String[] domains = {"invalid-domain"};
-    WebCrawlerConfig config = new WebCrawlerConfig(url, depth, domains);
+    WebCrawlerConfig config = new WebCrawlerConfig(url, depth, url, domains);
     assertFalse(config.verifyConfig());
   }
 
@@ -47,7 +47,7 @@ public class WebCrawlerImplConfigTest {
     String url = "https://example.com";
     int depth = 2;
     String[] domains = null;
-    WebCrawlerConfig config = new WebCrawlerConfig(url, depth, domains);
+    WebCrawlerConfig config = new WebCrawlerConfig(url, depth, url, domains);
     assertFalse(config.verifyConfig());
   }
 }

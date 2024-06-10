@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class WebCrawlerOutputFileWriterImpl implements WebCrawlerOutputFileWriter{
+public class WebCrawlerOutputFileWriterImpl {
 
   private final File outputFile;
   private final StringBuilder outputFileContent = new StringBuilder();
@@ -83,9 +83,9 @@ public class WebCrawlerOutputFileWriterImpl implements WebCrawlerOutputFileWrite
     return markdownHeading.toString();
   }
 
-  public void writeToOutputFile() {
-    try (FileWriter fileWriter = new FileWriter(this.outputFile)) {
-      fileWriter.write(this.outputFileContent.toString());
+  public static void writeToOutputFile(StringBuilder outputFileContents, File outputFile) {
+    try (FileWriter fileWriter = new FileWriter(outputFile)) {
+      fileWriter.write(outputFileContents.toString());
     } catch (IOException e) {
           System.out.println("[ERROR] Failed writing to output file");
     }

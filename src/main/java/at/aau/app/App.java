@@ -1,5 +1,6 @@
 package at.aau.app;
 
+import at.aau.webcrawler.WebCrawlerExecutor;
 import at.aau.webcrawler.dto.WebCrawlerConfig;
 import at.aau.webcrawler.WebCrawlerImpl;
 
@@ -11,24 +12,23 @@ public class App {
 
     public static void main(String[] args) {
         scanner = new Scanner(System.in);
-        String url = readURL();
+        String[] urls = readURLs();
         maxDepth = readDepth();
         String[] domains = readDomains();
         scanner.close();
-        initializeCrawlerAndRun(url, domains);
+
+        initializeCrawlerAndRun(urls, domains);
     }
 
-    private static void initializeCrawlerAndRun(String url, String[] domains) {
-        WebCrawlerConfig crawlerConfig = new WebCrawlerConfig(url, 0, domains);
-        if(crawlerConfig.verifyConfig()){
-            WebCrawlerImpl crawler = new WebCrawlerImpl(crawlerConfig);
-            crawler.run();
-        }
+    private static void initializeCrawlerAndRun(String[] urls, String[] domains) {
+        WebCrawlerExecutor.initializeThreadPoolWithThreadCount(20);
+        WebCrawlerImpl crawler = new WebCrawlerImpl();
+        crawler.run(urls, domains);
     }
 
-    private static String readURL() {
-        System.out.println("Enter URL:");
-        return scanner.nextLine();
+    private static String[] readURLs() {
+        System.out.println("Enter URL(s) (;-separated if multiple):");
+        return scanner.nextLine().replace(" ", "").split(";");
     }
 
     private static int readDepth() {
@@ -37,9 +37,9 @@ public class App {
     }
 
     private static String[] readDomains() {
-        System.out.println("Enter domain(s) (comma-separated if multiple):");
+        System.out.println("Enter domain(s) (;-separated if multiple):");
         scanner.nextLine();
-        return scanner.nextLine().replace(" ", "").split(",");
+        return scanner.nextLine().replace(" ", "").split(";");
     }
 
 }
