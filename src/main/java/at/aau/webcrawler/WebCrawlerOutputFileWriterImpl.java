@@ -20,7 +20,7 @@ public class WebCrawlerOutputFileWriterImpl {
 
   public void setBaseReport(WebCrawlerPageResult webCrawlerResult) {
     WebCrawlerConfig webCrawlerConfiguration = webCrawlerResult.getWebCrawlerConfiguration();
-    appendLine("input: <a>", webCrawlerConfiguration.getUrl(), "</a>");
+    appendLine("input: <a>", webCrawlerConfiguration.getUrl(), " </a>");
     appendLine("depth:", String.valueOf(webCrawlerConfiguration.getDepth()));
     appendLine("crawled domains:");
     appendArrayItems(webCrawlerConfiguration.getDomains());
