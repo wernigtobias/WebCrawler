@@ -18,9 +18,9 @@ public class WebCrawlerOutputFileWriterImpl {
   }
 
 
-  public static void writeToOutputFile(StringBuilder outputFileContents, File outputFile) {
+  public static void writeToOutputFile(String outputFileContents, File outputFile) {
     try (FileWriter fileWriter = new FileWriter(outputFile)) {
-      fileWriter.write(outputFileContents.toString());
+      fileWriter.write(outputFileContents);
     } catch (IOException e) {
           System.out.println("[ERROR] Failed writing to output file");
     }

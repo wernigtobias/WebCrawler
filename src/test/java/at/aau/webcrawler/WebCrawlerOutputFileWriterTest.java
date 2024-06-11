@@ -12,7 +12,7 @@ import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class WebCrawlerImplOutputFileWriterTest {
+public class WebCrawlerOutputFileWriterTest {
 
   private WebCrawlerOutputFileWriterImpl writer;
   @BeforeEach

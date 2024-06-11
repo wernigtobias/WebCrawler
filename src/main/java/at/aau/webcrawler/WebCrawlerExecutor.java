@@ -40,13 +40,13 @@ public class WebCrawlerExecutor {
 
     private String getErrorAsReportMessage(Exception e) {
         if (e instanceof TimeoutException) {
-            return "TimeoutException when waiting on child crawling url";
+            return "TimeoutException when crawling url";
         } else if (e instanceof ExecutionException) {
-            return "ExecutionException when waiting on child crawling url";
+            return "ExecutionException when crawling url";
         } else if (e instanceof InterruptedException) {
-            return "InterruptedException when waiting on child crawling url";
+            return "InterruptedException when crawling url";
         }
-        return "Exception when waiting on child crawling url";
+        return "Exception when waiting on crawling url";
     }
 
     public boolean shutdown() {
@@ -54,7 +54,7 @@ public class WebCrawlerExecutor {
         try {
             return executorService.awaitTermination(timeoutForShutdownInSeconds, TimeUnit.MINUTES);
         } catch (InterruptedException interruptedException) {
-            System.out.println("InterruptedException when waiting for thread pool termination");
+            System.out.println("InterruptedException when waiting for threadpool termination");
             interruptedException.printStackTrace();
         }
         return false;

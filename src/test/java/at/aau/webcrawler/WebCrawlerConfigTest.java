@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class WebCrawlerImplConfigTest {
+public class WebCrawlerConfigTest {
 
   @Test
   public void testVerifyConfig_ValidConfig() {
