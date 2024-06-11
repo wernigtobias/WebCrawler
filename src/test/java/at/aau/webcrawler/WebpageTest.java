@@ -25,7 +25,9 @@ public class WebpageTest {
         "<a href=\"http://example.com\">Link 1</a>" +
         "<a href=\"http://example.org\">Link 2</a>" +
         "</body></html>";
+
     Document document = Jsoup.parse(html, "", Parser.xmlParser());
+
     webpage = new WebpageImpl(document);
   }
 
@@ -33,8 +35,12 @@ public class WebpageTest {
   public void testGetHeadings() {
     List<Heading> headings = webpage.getHeadings();
     assertEquals(2, headings.size());
+
     assertEquals(1, headings.get(0).getOrder());
+    assertEquals("Heading 1", headings.get(0).getText());
+
     assertEquals(2, headings.get(1).getOrder());
+    assertEquals("Heading 2", headings.get(1).getText());
   }
 
   @Test
