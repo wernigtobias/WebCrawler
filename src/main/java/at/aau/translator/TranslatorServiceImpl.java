@@ -85,10 +85,10 @@ public class TranslatorServiceImpl implements TranslatorService {
             if (response.isSuccessful()) {
                 return getTranslatedTextFromResponse(response);
             } else {
-                throw new TranslatorServiceException("Translation did not work!");
+                throw new TranslatorServiceException("An error occurred while translating");
             }
         } catch (Exception e) {
-            throw new TranslatorServiceException("Translation did not work!");
+            throw new TranslatorServiceException("An error occurred while translating");
         }
     }
 
@@ -111,7 +111,9 @@ public class TranslatorServiceImpl implements TranslatorService {
         if (text == null) {
             throw new IllegalArgumentException();
         }
+
         String abbreviation = getAbbreviationOfLanguage(targetLanguage);
+
         return new FormBody.Builder()
                 .add("source_language", "auto")
                 .add("target_language", abbreviation)
