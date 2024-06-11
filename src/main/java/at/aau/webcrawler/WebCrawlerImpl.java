@@ -13,85 +13,103 @@ import java.util.Set;
 
 public class WebCrawlerImpl {
 
-  private final Set<String> crawledLinks;
-  private HashMap<String, WebCrawlerOutputFileWriterImpl> outputFileWriterHashMap;
+    private final Set<String> crawledLinks;
+    private HashMap<String, WebCrawlerOutputFileWriterImpl> outputFileWriterHashMap;
 
-  public WebCrawlerImpl() {
-    this.outputFileWriterHashMap = new HashMap<>();
-    this.crawledLinks = new HashSet<>();
-  }
-
-  public void run(String[] urls, String[] domains) {
-    WebCrawlerExecutor webCrawlerExecutor = new WebCrawlerExecutor();
-
-    for (String url : urls) {
-      if(!outputFileWriterHashMap.containsKey(url)) {
-        outputFileWriterHashMap.put(url, new WebCrawlerOutputFileWriterImpl(new File("output.md")));
-      }
-
-      WebCrawlerConfig webCrawlerConfig = new WebCrawlerConfig(url, 0, url, domains);
-      webCrawlerExecutor.submit(() -> crawl(webCrawlerConfig), url);
+    public WebCrawlerImpl() {
+        this.outputFileWriterHashMap = new HashMap<>();
+        this.crawledLinks = new HashSet<>();
     }
 
-    String resultOfChildren = webCrawlerExecutor.getResult();
-    StringBuilder outputFileBuilder = new StringBuilder();
+    public void run(String[] urls, String[] domains) {
+        WebCrawlerExecutor webCrawlerExecutor = new WebCrawlerExecutor();
 
-    for (String url : urls) {
-      outputFileBuilder.append(outputFileWriterHashMap.get(url).getOutputFileContent());
-      outputFileBuilder.append("\r\n");
+        for (String url : urls) {
+            if (!outputFileWriterHashMap.containsKey(url)) {
+                outputFileWriterHashMap.put(url, new WebCrawlerOutputFileWriterImpl(new File("output.md")));
+            }
+
+            WebCrawlerConfig webCrawlerConfig = new WebCrawlerConfig(url, 0, url, domains);
+            webCrawlerExecutor.submit(() -> crawl(webCrawlerConfig), url);
+        }
+
+        String resultOfChildren = webCrawlerExecutor.getResult();
+        StringBuilder outputFileBuilder = new StringBuilder();
+        outputFileBuilder.append(resultOfChildren);
+
+        /*for (String url : urls) {
+            outputFileBuilder.append(outputFileWriterHashMap.get(url).getOutputFileContent());
+            outputFileBuilder.append("\r\n");
+        }*/
+
+        WebCrawlerOutputFileWriterImpl.writeToOutputFile(outputFileBuilder, new File("output.md"));
+        webCrawlerExecutor.shutdown();
     }
 
-    WebCrawlerOutputFileWriterImpl.writeToOutputFile(outputFileBuilder, new File("output.md"));
-    webCrawlerExecutor.shutdown();
-  }
+    public String crawl(WebCrawlerConfig configuration) {
+        System.out.println("[Crawler-" + Thread.currentThread().getName() + "-] URL: " + configuration.getUrl() + " Depth: " + configuration.getDepth());
 
-  public String crawl(WebCrawlerConfig configuration) {
-    System.out.println("[Crawler-" + Thread.currentThread().getName() + "-] URL: " + configuration.getUrl() + " Depth: " + configuration.getDepth());
+        WebpageImpl webpage = loadWebpage(configuration.getUrl());
+        if (webpage != null) {
+            StringBuilder report = new StringBuilder();
 
-    WebpageImpl webpage = loadWebpage(configuration.getUrl());
-    if (webpage != null) {
-      WebCrawlerPageResult result = processWebpage(webpage, configuration);
-      saveResult(result, configuration);
-      processLinks(webpage.getLinks(), configuration);
+            WebCrawlerPageResult result = processWebpage(webpage, configuration);
+            report.append(getResult(result, configuration));
+
+            report.append(processLinks(webpage.getLinks(), configuration));
+
+            return report.toString();
+        }
+
+        return "";
     }
 
-    return "";
-  }
-
-  public WebpageImpl loadWebpage(String url) {
-    crawledLinks.add(url);
-    return WebService.loadWebpage(url);
-  }
-
-  public WebCrawlerPageResult processWebpage(WebpageImpl webpage, WebCrawlerConfig configuration) {
-    WebCrawlerPageResult result = new WebCrawlerPageResult(configuration);
-    result.setHeadings(webpage.getHeadings());
-    result.setLinks(webpage.getLinks());
-    return result;
-  }
-
-  public void saveResult(WebCrawlerPageResult result, WebCrawlerConfig configuration) {
-    if (configuration.getDepth() == 0 ) {
-      outputFileWriterHashMap.get(configuration.getRootUrl()).setBaseReport(result);
-    } else {
-      outputFileWriterHashMap.get(configuration.getRootUrl()).addNestedReport(result);
+    public WebpageImpl loadWebpage(String url) {
+        crawledLinks.add(url);
+        return WebService.loadWebpage(url);
     }
-  }
 
-  public void processLinks(Set<String> links, WebCrawlerConfig configuration) {
-    if (configuration.getDepth() >= App.maxDepth) {
-      return;
+    public WebCrawlerPageResult processWebpage(WebpageImpl webpage, WebCrawlerConfig configuration) {
+        WebCrawlerPageResult result = new WebCrawlerPageResult(configuration);
+        result.setHeadings(webpage.getHeadings());
+        result.setLinks(webpage.getLinks());
+        return result;
     }
-    for (String link : links) {
-      processLink(link, configuration);
-    }
-  }
 
-  public void processLink(String link, WebCrawlerConfig configuration) {
-    int newDepth = configuration.getDepth() + 1;
-    WebCrawlerConfig nestedConfiguration = new WebCrawlerConfig(link, newDepth, configuration.getRootUrl(),configuration.getDomains());
-    if (!crawledLinks.contains(link) && nestedConfiguration.verifyConfig()) {
-      crawl(nestedConfiguration);
+    public String getResult(WebCrawlerPageResult result, WebCrawlerConfig configuration) {
+        if (configuration.getDepth() == 0) {
+            return WebCrawlerReportBuilder.getBaseReport(result);
+        } else {
+            return WebCrawlerReportBuilder.addNestedReport(result);
+        }
     }
-  }
+
+    public String processLinks(Set<String> links, WebCrawlerConfig configuration) {
+        if (configuration.getDepth() >= App.maxDepth) {
+            return "";
+        }
+
+        WebCrawlerExecutor webCrawlerExecutor = new WebCrawlerExecutor();
+        for (String link : links) {
+            webCrawlerExecutor.submit(() -> processLink(link, configuration), link);
+        }
+
+        StringBuilder report = new StringBuilder();
+        String resultOfChildren = webCrawlerExecutor.getResult();
+        report.append(resultOfChildren);
+
+        return report.toString();
+    }
+
+    public String processLink(String link, WebCrawlerConfig configuration) {
+        int newDepth = configuration.getDepth() + 1;
+
+        WebCrawlerConfig nestedConfiguration = new WebCrawlerConfig(link, newDepth, configuration.getRootUrl(), configuration.getDomains());
+
+        if (!crawledLinks.contains(link) && nestedConfiguration.verifyConfig()) {
+            return crawl(nestedConfiguration);
+        }
+
+        return "";
+    }
 }
