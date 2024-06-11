@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TranslatorServiceImpl implements TranslatorService {
-    private final static Map<String, String> languagesWithAbbreviations = createLanguagesWithAbbreviations();
-    private final static String KEY = "";
-    private OkHttpClient client = new OkHttpClient();
+    private final static Map<String, String> languagesWithAbbreviations = loadLanguagesWithAbbreviations();
+    private final static String API_KEY = "";
+    private OkHttpClient httpClient = new OkHttpClient();
 
 
-    private static Map<String, String> createLanguagesWithAbbreviations() {
+    private static Map<String, String> loadLanguagesWithAbbreviations() {
         Map<String, String> languagesWithAbbreviations = new HashMap<>();
         languagesWithAbbreviations.put("afrikaans", "af");
         languagesWithAbbreviations.put("albanian", "sq");
@@ -80,7 +80,7 @@ public class TranslatorServiceImpl implements TranslatorService {
         try {
             RequestBody requestBody = createTranslationRequestBody(text, targetLanguage);
             Request request = createTranslationRequest(requestBody);
-            Response response = client.newCall(request).execute();
+            Response response = httpClient.newCall(request).execute();
 
             if (response.isSuccessful()) {
                 return getTranslatedTextFromResponse(response);
@@ -102,8 +102,8 @@ public class TranslatorServiceImpl implements TranslatorService {
                 .url("https://text-translator2.p.rapidapi.com/translate")
                 .post(requestBody)
                 .addHeader("content-type", "application/x-www-form-urlencoded")
-                .addHeader("X-RapidAPI-Key", KEY)
                 .addHeader("X-RapidAPI-Host", "text-translator2.p.rapidapi.com")
+                .addHeader("X-RapidAPI-Key", API_KEY)
                 .build();
     }
 
@@ -121,7 +121,7 @@ public class TranslatorServiceImpl implements TranslatorService {
                 .build();
     }
 
-    public void setClient(OkHttpClient client) {
-        this.client = client;
+    public void setHttpClient(OkHttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 }

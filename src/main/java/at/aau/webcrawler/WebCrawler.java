@@ -3,14 +3,10 @@ package at.aau.webcrawler;
 import at.aau.app.App;
 import at.aau.services.WebService;
 import at.aau.translator.TranslatorService;
-import at.aau.translator.TranslatorServiceException;
-import at.aau.translator.TranslatorServiceImpl;
 import at.aau.webcrawler.dto.Heading;
 import at.aau.webcrawler.dto.WebCrawlerConfig;
 import at.aau.webcrawler.dto.WebCrawlerPageResult;
 import at.aau.webcrawler.dto.Webpage;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,7 +32,7 @@ public class WebCrawler {
             webCrawlerExecutor.submit(() -> crawl(webCrawlerConfig), url);
         }
 
-        WebCrawlerOutputFileWriterImpl.writeToOutputFile(webCrawlerExecutor.getResult(), new File("output.md"));
+        WebCrawlerOutputFileWriter.writeToOutputFile(webCrawlerExecutor.getResult(), new File("output.md"));
         webCrawlerExecutor.shutdown();
     }
 
