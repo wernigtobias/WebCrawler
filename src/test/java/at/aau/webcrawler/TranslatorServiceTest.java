@@ -15,7 +15,7 @@ import org.mockito.Mockito;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 public class TranslatorServiceTest {
     private static OkHttpClient mockedHttpClient;

@@ -1,14 +1,11 @@
 package at.aau.webcrawler;
 
-import at.aau.services.WebService;
-import at.aau.webcrawler.dto.Webpage;
-import at.aau.webcrawler.dto.WebpageImpl;
 import org.jsoup.Connection;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
+
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 

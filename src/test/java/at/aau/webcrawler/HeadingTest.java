@@ -4,7 +4,6 @@ import at.aau.webcrawler.dto.Heading;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class HeadingTest {
 

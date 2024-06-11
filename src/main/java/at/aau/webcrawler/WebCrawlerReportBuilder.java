@@ -4,8 +4,6 @@ import at.aau.app.App;
 import at.aau.webcrawler.dto.Heading;
 import at.aau.webcrawler.dto.WebCrawlerConfig;
 import at.aau.webcrawler.dto.WebCrawlerPageResult;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.List;
 

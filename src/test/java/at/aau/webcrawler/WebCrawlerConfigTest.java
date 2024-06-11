@@ -1,5 +1,5 @@
 package at.aau.webcrawler;
-import at.aau.app.App;
+
 import at.aau.webcrawler.dto.WebCrawlerConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

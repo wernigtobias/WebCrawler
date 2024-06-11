@@ -18,7 +18,7 @@ import java.util.Set;
 public class WebCrawler {
 
     private final Set<String> crawledLinks;
-    private TranslatorService translatorService;
+    private final TranslatorService translatorService;
 
     public WebCrawler(TranslatorService translatorService) {
         this.translatorService = translatorService;
@@ -42,12 +42,11 @@ public class WebCrawler {
 
         try {
             Webpage webpage = loadWebpage(configuration.getUrl());
-            StringBuilder report = new StringBuilder();
 
-            report.append(getResult(processWebpage(webpage, configuration), configuration));
-            report.append(processLinks(webpage.getLinks(), configuration));
+            String report = getResult(processWebpage(webpage, configuration), configuration) +
+                    processLinks(webpage.getLinks(), configuration);
 
-            return report.toString();
+            return report;
         } catch (WebServiceException wse) {
             return WebCrawlerReportBuilder.getBrokenLinkReport(configuration, wse.getMessage());
         }
@@ -62,8 +61,6 @@ public class WebCrawler {
 
         List<Heading> headings = translateHeadings(webpage.getHeadings());
         result.setHeadings(headings);
-
-        result.setLinks(webpage.getLinks());
         return result;
     }
 
