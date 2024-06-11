@@ -4,13 +4,11 @@ import at.aau.app.App;
 import at.aau.services.WebService;
 import at.aau.webcrawler.dto.WebCrawlerConfig;
 import at.aau.webcrawler.dto.WebCrawlerPageResult;
-import at.aau.webcrawler.dto.Webpage;
+import at.aau.webcrawler.dto.WebpageImpl;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class WebCrawlerImpl {
@@ -50,7 +48,7 @@ public class WebCrawlerImpl {
   public String crawl(WebCrawlerConfig configuration) {
     System.out.println("[Crawler-" + Thread.currentThread().getName() + "-] URL: " + configuration.getUrl() + " Depth: " + configuration.getDepth());
 
-    Webpage webpage = loadWebpage(configuration.getUrl());
+    WebpageImpl webpage = loadWebpage(configuration.getUrl());
     if (webpage != null) {
       WebCrawlerPageResult result = processWebpage(webpage, configuration);
       saveResult(result, configuration);
@@ -60,12 +58,12 @@ public class WebCrawlerImpl {
     return "";
   }
 
-  public Webpage loadWebpage(String url) {
+  public WebpageImpl loadWebpage(String url) {
     crawledLinks.add(url);
     return WebService.loadWebpage(url);
   }
 
-  public WebCrawlerPageResult processWebpage(Webpage webpage, WebCrawlerConfig configuration) {
+  public WebCrawlerPageResult processWebpage(WebpageImpl webpage, WebCrawlerConfig configuration) {
     WebCrawlerPageResult result = new WebCrawlerPageResult(configuration);
     result.setHeadings(webpage.getHeadings());
     result.setLinks(webpage.getLinks());

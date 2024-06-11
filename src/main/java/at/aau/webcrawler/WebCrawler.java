@@ -2,7 +2,7 @@ package at.aau.webcrawler;
 
 import at.aau.webcrawler.dto.WebCrawlerConfig;
 import at.aau.webcrawler.dto.WebCrawlerPageResult;
-import at.aau.webcrawler.dto.Webpage;
+import at.aau.webcrawler.dto.WebpageImpl;
 
 import java.util.Set;
 
@@ -37,7 +37,7 @@ public interface WebCrawler {
    * @param url The URL of the webpage to load.
    * @return The loaded webpage.
    */
-  Webpage loadWebpage(String url);
+  WebpageImpl loadWebpage(String url);
 
   /**
    * Processes a webpage and generates results based on the configuration.
@@ -46,7 +46,7 @@ public interface WebCrawler {
    * @param configuration The configuration for processing the webpage.
    * @return The results generated from processing the webpage.
    */
-  WebCrawlerPageResult processWebpage(Webpage webpage, WebCrawlerConfig configuration);
+  WebCrawlerPageResult processWebpage(WebpageImpl webpage, WebCrawlerConfig configuration);
 
   /**
    * Saves the results of processing a webpage.
