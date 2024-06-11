@@ -13,11 +13,11 @@ public class App {
     public static void main(String[] args) {
         scanner = new Scanner(System.in);
         //String[] urls = readURLs();
-        String[] urls = new String[]{"https://ecockpit.at", "https://softwaregutachten.at/"};
+        String[] urls = new String[]{"https://endlessblue.pixelbay.at", "https://www.ecockpit.at/"};
         //maxDepth = readDepth();
         maxDepth = 3;
         //String[] domains = readDomains();
-        String[] domains = new String[]{"ecockpit.at", "softwaregutachten.at", "de.wikipedia.org"};
+        String[] domains = new String[]{"ecockpit.at", "aau.at", "wild.at", "pixelbay.at"};
 
         scanner.close();
 
