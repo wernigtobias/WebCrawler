@@ -31,6 +31,7 @@ public class WebCrawlerConfig {
     if (url == null || domains == null) {
       return false;
     }
+
     return WebCrawlerVerifier.verifyURL(url, domains) && WebCrawlerVerifier.verifyDepth(depth) && WebCrawlerVerifier.verifyDomains(domains);
   }
 
