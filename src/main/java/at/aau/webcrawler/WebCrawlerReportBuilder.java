@@ -60,7 +60,7 @@ public class WebCrawlerReportBuilder {
     }
 
     public static String getBrokenLinkReport(WebCrawlerConfig configuration) {
-        String brokenLink = createDepthIndent(configuration.getDepth()) + " broken link<a>" + configuration.getUrl() + "</a>\n";
+        String brokenLink = createDepthIndent(configuration.getDepth()) + " broken link<a>" + configuration.getUrl() + " </a>\n";
         return brokenLink;
     }
 
