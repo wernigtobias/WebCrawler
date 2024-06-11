@@ -2,19 +2,29 @@ package at.aau.webcrawler;
 
 import at.aau.app.App;
 import at.aau.services.WebService;
+import at.aau.translator.TranslatorService;
+import at.aau.translator.TranslatorServiceException;
+import at.aau.translator.TranslatorServiceImpl;
+import at.aau.webcrawler.dto.Heading;
 import at.aau.webcrawler.dto.WebCrawlerConfig;
 import at.aau.webcrawler.dto.WebCrawlerPageResult;
 import at.aau.webcrawler.dto.Webpage;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class WebCrawler {
 
     private final Set<String> crawledLinks;
+    private TranslatorService translatorService;
 
-    public WebCrawler() {
+    public WebCrawler(TranslatorService translatorService) {
+        this.translatorService = translatorService;
         this.crawledLinks = new HashSet<>();
     }
 
@@ -52,9 +62,34 @@ public class WebCrawler {
 
     public WebCrawlerPageResult processWebpage(Webpage webpage, WebCrawlerConfig configuration) {
         WebCrawlerPageResult result = new WebCrawlerPageResult(configuration);
-        result.setHeadings(webpage.getHeadings());
+
+        List<Heading> headings = translateHeadings(webpage.getHeadings());
+        result.setHeadings(headings);
+
         result.setLinks(webpage.getLinks());
         return result;
+    }
+
+    private List<Heading> translateHeadings(List<Heading> headings) {
+        List<Heading> translatedHeadings = new ArrayList<>();
+        try {
+            for (Heading heading : headings) {
+                Heading translatedHeading = new Heading(translatorService.translate(heading.getText(), App.targetLanguage), heading.getOrder());
+                translatedHeadings.add(translatedHeading);
+            }
+
+            return translatedHeadings;
+        } catch (Exception e) {
+            return handleTranslationErrorForHeadings(headings);
+        }
+    }
+
+    private List<Heading> handleTranslationErrorForHeadings(List<Heading> headings) {
+        List<Heading> headingsWithErrorNote = new ArrayList<>();
+        for (Heading heading : headings) {
+            headingsWithErrorNote.add(new Heading(heading.getText() + " (an error occurred while fetching translation)", heading.getOrder()));
+        }
+        return headingsWithErrorNote;
     }
 
     public String getResult(WebCrawlerPageResult result, WebCrawlerConfig configuration) {
@@ -95,8 +130,8 @@ public class WebCrawler {
         return "";
     }
 
-    public synchronized boolean checkIfLinkAlreadyCrawled(String url){
-        if(!crawledLinks.contains(url)) {
+    public synchronized boolean checkIfLinkAlreadyCrawled(String url) {
+        if (!crawledLinks.contains(url)) {
             crawledLinks.add(url);
             return false;
         }

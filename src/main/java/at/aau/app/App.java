@@ -1,33 +1,42 @@
 package at.aau.app;
 
+import at.aau.translator.TranslatorService;
+import at.aau.translator.TranslatorServiceImpl;
 import at.aau.webcrawler.WebCrawlerExecutor;
-import at.aau.webcrawler.dto.WebCrawlerConfig;
-import at.aau.webcrawler.WebCrawlerImpl;
+import at.aau.webcrawler.WebCrawler;
 
 import java.util.Scanner;
 public class App {
 
     static Scanner scanner;
     public static int maxDepth;
+    public static String[] urls;
+    public static String[] domains;
+    public static String targetLanguage;
 
     public static void main(String[] args) {
+        TranslatorService translatorService = new TranslatorServiceImpl();
+
+        readUserInput(translatorService);
+
+        WebCrawlerExecutor.initializeThreadPoolWithThreadCount(1000);
+        WebCrawler crawler = new WebCrawler(translatorService);
+        crawler.run(urls, domains);
+    }
+
+    private static void readUserInput(TranslatorService translatorService){
         scanner = new Scanner(System.in);
         //String[] urls = readURLs();
-        String[] urls = new String[]{"https://endlessblue.pixelbay.at", "https://www.ecockpit.at/"};
+        urls = new String[]{"https://endlessblue.pixelbay.at"};
         //maxDepth = readDepth();
         maxDepth = 3;
         //String[] domains = readDomains();
-        String[] domains = new String[]{"ecockpit.at", "aau.at", "wild.at", "pixelbay.at"};
+        domains = new String[]{"ecockpit.at", "pixelbay.at"};
+
+        //targetLanguage = readLanguage(translatorService);
+        targetLanguage = "spanish";
 
         scanner.close();
-
-        initializeCrawlerAndRun(urls, domains);
-    }
-
-    private static void initializeCrawlerAndRun(String[] urls, String[] domains) {
-        WebCrawlerExecutor.initializeThreadPoolWithThreadCount(300);
-        WebCrawlerImpl crawler = new WebCrawlerImpl();
-        crawler.run(urls, domains);
     }
 
     private static String[] readURLs() {
@@ -46,4 +55,15 @@ public class App {
         return scanner.nextLine().replace(" ", "").split(";");
     }
 
+    private static String readLanguage(TranslatorService translatorService) {
+        System.out.println("Enter language:");
+        String language = scanner.nextLine();
+
+        if(translatorService.validateLanguage(language)){
+            return language;
+        }
+
+        System.out.println("Wrong input. Please enter the wanted language in english.");
+        return readLanguage(translatorService);
+    }
 }
