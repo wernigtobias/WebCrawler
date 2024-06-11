@@ -1,53 +1,34 @@
 package at.aau.webcrawler;
 
-import at.aau.webcrawler.dto.WebCrawlerConfig;
-import at.aau.webcrawler.dto.WebCrawlerPageResult;
-import org.jsoup.select.Elements;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.HashSet;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 public class WebCrawlerOutputFileWriterTest {
 
-  private WebCrawlerOutputFileWriterImpl writer;
-  @BeforeEach
-  void init() {
-    writer = new WebCrawlerOutputFileWriterImpl(new File("test.txt"));
-  }
+    private static final File outputFile = new File("output.md");
 
-  @Test
-  public void testSetBaseReport() {
-    //WebCrawlerConfig config = new WebCrawlerConfig("http://example.com", 2, new String[]{"example.com"});
-    //WebCrawlerPageResult results = new WebCrawlerPageResult(config);
-    //results.setHeadings(new Elements('1'));
-    //results.setLinks(new HashSet<>());
-    //writer.getBaseReport(results);
-    //assertEquals("input: <a>http://example.com</a>\ndepth:2\ncrawled domains:\n<br>example.com\nsummary:\n\n", writer.getOutputFileContent().toString());
-  }
+    @BeforeEach
+    void init() throws IOException {
+        Files.deleteIfExists(outputFile.toPath());
+    }
 
-  @Test
-  public void testAddNestedReport() {
-    /*WebCrawlerConfig config = new WebCrawlerConfig("http://example.com/nested", 3, new String[]{"example.com"});
-    WebCrawlerPageResult results = new WebCrawlerPageResult(config);
-    results.setHeadings(new Elements('1'));
-    results.setLinks(new HashSet<>());
-    writer.addNestedReport(results);
-    assertEquals("--> link to <a>http://example.com/nested</a>\n\n", writer.getOutputFileContent().toString());
-  */
-  }
+    @Test
+    void writeToFileTest() throws IOException {
+        String content = "fileContent";
+        WebCrawlerOutputFileWriter.writeToOutputFile(content, outputFile);
+        assertEquals("fileContent", Files.readString(outputFile.toPath()));
+    }
 
+    @AfterAll
+    static void cleanup() throws IOException {
+        Files.deleteIfExists(outputFile.toPath());
+    }
 
-  @Test
-  public void testAddBrokenLinkReport() {
-    /*WebCrawlerConfig config = new WebCrawlerConfig("http://brokenlink.com", 1, new String[]{"brokenlink.com"});
-    writer.addBrokenLinkReport(config, 2);
-    assertEquals("----> broken link<a>http://brokenlink.com</a>\n", writer.getOutputFileContent().toString());
-
-     */
-  }
 }
