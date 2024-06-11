@@ -8,7 +8,7 @@ public class WebCrawlerPageResult {
 
   private final WebCrawlerConfig webCrawlerConfig;
 
-  private Elements headings;
+  private List<Heading> headings;
   private Set<String> links;
   private final int depth;
   private final String url;
@@ -19,7 +19,7 @@ public class WebCrawlerPageResult {
     this.url = webCrawlerConfiguration.getUrl();
   }
 
-  public void setHeadings(Elements headings) {
+  public void setHeadings(List<Heading> headings) {
     this.headings = headings;
   }
 
@@ -27,7 +27,7 @@ public class WebCrawlerPageResult {
     return webCrawlerConfig;
   }
 
-  public Elements getHeadings() {
+  public List<Heading> getHeadings() {
     return headings;
   }
 

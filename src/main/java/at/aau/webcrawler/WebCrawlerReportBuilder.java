@@ -1,10 +1,13 @@
 package at.aau.webcrawler;
 
 import at.aau.app.App;
+import at.aau.webcrawler.dto.Heading;
 import at.aau.webcrawler.dto.WebCrawlerConfig;
 import at.aau.webcrawler.dto.WebCrawlerPageResult;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.util.List;
 
 public class WebCrawlerReportBuilder {
 
@@ -22,8 +25,8 @@ public class WebCrawlerReportBuilder {
     }
 
     private static void appendHeadings(StringBuilder report, WebCrawlerPageResult webCrawlerResult) {
-        Elements headings = webCrawlerResult.getHeadings();
-        for (Element heading : headings) {
+        List<Heading> headings = webCrawlerResult.getHeadings();
+        for (Heading heading : headings) {
             report.append(formatHeading(heading, webCrawlerResult.getWebCrawlerConfiguration().getDepth()));
         }
         report.append("\n");
@@ -70,15 +73,15 @@ public class WebCrawlerReportBuilder {
         return indent.toString();
     }
 
-    private static String formatHeading(Element heading, int depth) {
+    private static String formatHeading(Heading heading, int depth) {
         StringBuilder markdownHeading = new StringBuilder();
-        int headingLevel = Integer.parseInt(heading.tagName().substring(1));
+        int headingLevel = heading.getOrder();
         markdownHeading.append("\n");
         markdownHeading.append("#".repeat(Math.max(0, headingLevel)));
         markdownHeading.append(" ");
         markdownHeading.append(createDepthIndent(depth));
         markdownHeading.append(" ");
-        markdownHeading.append(heading.text());
+        markdownHeading.append(heading.getText());
         markdownHeading.append("\n");
         return markdownHeading.toString();
     }

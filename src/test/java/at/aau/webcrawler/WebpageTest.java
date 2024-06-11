@@ -1,5 +1,6 @@
 package at.aau.webcrawler;
 
+import at.aau.webcrawler.dto.Heading;
 import at.aau.webcrawler.dto.WebpageImpl;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,6 +9,7 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,10 +31,10 @@ public class WebpageTest {
 
   @Test
   public void testGetHeadings() {
-    Elements headings = webpage.getHeadings();
+    List<Heading> headings = webpage.getHeadings();
     assertEquals(2, headings.size());
-    assertEquals("h1", headings.get(0).tagName());
-    assertEquals("h2", headings.get(1).tagName());
+    assertEquals(1, headings.get(0).getOrder());
+    assertEquals(2, headings.get(1).getOrder());
   }
 
   @Test
