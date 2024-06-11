@@ -44,7 +44,7 @@ public class WebCrawlerReportBuilder {
         return report.toString();
     }
 
-    public static String addNestedReport(WebCrawlerPageResult nestedWebCrawlerResult) {
+    public static String getNestedReport(WebCrawlerPageResult nestedWebCrawlerResult) {
         WebCrawlerConfig webCrawlerConfiguration = nestedWebCrawlerResult.getWebCrawlerConfiguration();
 
         StringBuilder report = new StringBuilder();
@@ -56,8 +56,8 @@ public class WebCrawlerReportBuilder {
         return report.toString();
     }
 
-    public static String addBrokenLinkReport(WebCrawlerConfig configuration, int depth) {
-        String brokenLink = createDepthIndent(depth) + " broken link<a>" + configuration.getUrl() + "</a>\n";
+    public static String getBrokenLinkReport(WebCrawlerConfig configuration) {
+        String brokenLink = createDepthIndent(configuration.getDepth()) + " broken link<a>" + configuration.getUrl() + "</a>\n";
         return brokenLink;
     }
 
