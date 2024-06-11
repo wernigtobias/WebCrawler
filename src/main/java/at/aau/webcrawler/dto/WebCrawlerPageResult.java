@@ -10,9 +10,13 @@ public class WebCrawlerPageResult {
 
   private Elements headings;
   private Set<String> links;
+  private final int depth;
+  private final String url;
 
   public WebCrawlerPageResult(WebCrawlerConfig webCrawlerConfiguration) {
     this.webCrawlerConfig = webCrawlerConfiguration;
+    this.depth = webCrawlerConfiguration.getDepth();
+    this.url = webCrawlerConfiguration.getUrl();
   }
 
   public void setHeadings(Elements headings) {
@@ -33,5 +37,13 @@ public class WebCrawlerPageResult {
 
   public void setLinks(Set<String> links) {
     this.links = links;
+  }
+
+  public int getDepth() {
+    return depth;
+  }
+
+  public String getUrl() {
+    return url;
   }
 }
