@@ -1,6 +1,6 @@
 package at.aau.webcrawler;
 
-import at.aau.webcrawler.dto.Webpage;
+import at.aau.webcrawler.dto.WebpageImpl;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WebpageTest {
-  private Webpage webpage;
+  private WebpageImpl webpage;
 
   @BeforeEach
   public void setUp() {
@@ -24,7 +24,7 @@ public class WebpageTest {
         "<a href=\"http://example.org\">Link 2</a>" +
         "</body></html>";
     Document document = Jsoup.parse(html, "", Parser.xmlParser());
-    webpage = new Webpage(document);
+    webpage = new WebpageImpl(document);
   }
 
   @Test
