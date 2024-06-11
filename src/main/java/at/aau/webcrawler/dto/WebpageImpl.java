@@ -24,4 +24,13 @@ public class WebpageImpl implements Webpage {
     Elements linkElements = document.select("a");
     return linkElements.stream().map(element -> element.attr("href")).collect(Collectors.toSet());
   }
+
+  @Override
+  public String getSourceLanguage() {
+    String sourceLanguage = document.select("html").attr("lang");
+    if (sourceLanguage.equals("")) {
+      sourceLanguage = "undetectable";
+    }
+    return sourceLanguage;
+  }
 }

@@ -1,5 +1,6 @@
 package at.aau.webcrawler;
 
+import at.aau.app.App;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,6 +32,7 @@ public class WebCrawlerVerifierTest {
     @Test
     public void testVerifyDepth_PositiveDepth() {
         int depth = 5;
+        App.setMaxDepth(6);
         assertTrue(WebCrawlerVerifier.verifyDepth(depth));
     }
 

@@ -17,7 +17,7 @@ public class WebCrawlerReportBuilderTest {
 
     @BeforeEach
     void init() {
-        App.maxDepth = 2;
+        App.setMaxDepth(2);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class WebCrawlerReportBuilderTest {
         Mockito.when(mockedWebCrawlerConfig.getDepth()).thenReturn(2);
         Mockito.when(mockedWebCrawlerConfig.getUrl()).thenReturn("http://brokenlink.com");
 
-        String brokenLink = WebCrawlerReportBuilder.getBrokenLinkReport(mockedWebCrawlerConfig);
-        assertEquals("----> broken link<a>http://brokenlink.com </a>\n", brokenLink);
+        String brokenLink = WebCrawlerReportBuilder.getBrokenLinkReport(mockedWebCrawlerConfig, "ErrorMessage");
+        assertEquals("----> broken link<a>http://brokenlink.com </a> (ErrorMessage)\n", brokenLink);
     }
 }

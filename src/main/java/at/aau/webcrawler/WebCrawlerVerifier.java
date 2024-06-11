@@ -16,7 +16,7 @@ public class WebCrawlerVerifier {
   }
 
   public static boolean verifyDepth(int depth) {
-    return depth < App.maxDepth;
+    return depth < App.getMaxDepth();
   }
 
   public static boolean verifyDomains(String[] domains) {

@@ -38,7 +38,7 @@ public class WebCrawlerReportBuilder {
         StringBuilder report = new StringBuilder();
 
         appendLine(report, "input: <a>" + webCrawlerConfiguration.getUrl() + " </a>\n");
-        appendLine(report,"depth:", String.valueOf(App.maxDepth));
+        appendLine(report,"depth:", String.valueOf(App.getMaxDepth()));
         appendLine(report,"crawled domains:");
         appendArrayItems(report, webCrawlerConfiguration.getDomains());
         appendLine(report, "summary:");
@@ -59,8 +59,8 @@ public class WebCrawlerReportBuilder {
         return report.toString();
     }
 
-    public static String getBrokenLinkReport(WebCrawlerConfig configuration) {
-        String brokenLink = createDepthIndent(configuration.getDepth()) + " broken link<a>" + configuration.getUrl() + " </a>\n";
+    public static String getBrokenLinkReport(WebCrawlerConfig configuration, String errorMessage) {
+        String brokenLink = createDepthIndent(configuration.getDepth()) + " broken link<a>" + configuration.getUrl() + " </a> ("+ errorMessage + ")\n";
         return brokenLink;
     }
 

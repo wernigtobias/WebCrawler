@@ -2,6 +2,7 @@ package at.aau.webcrawler;
 
 import at.aau.app.App;
 import at.aau.services.WebService;
+import at.aau.services.WebServiceException;
 import at.aau.translator.TranslatorService;
 import at.aau.webcrawler.dto.Heading;
 import at.aau.webcrawler.dto.WebCrawlerConfig;
@@ -39,20 +40,20 @@ public class WebCrawler {
     public String crawl(WebCrawlerConfig configuration) {
         System.out.println("[Crawler-" + Thread.currentThread().getName() + "-] URL: " + configuration.getUrl() + " Depth: " + configuration.getDepth());
 
-        Webpage webpage = loadWebpage(configuration.getUrl());
-        if (webpage != null) {
+        try {
+            Webpage webpage = loadWebpage(configuration.getUrl());
             StringBuilder report = new StringBuilder();
 
             report.append(getResult(processWebpage(webpage, configuration), configuration));
             report.append(processLinks(webpage.getLinks(), configuration));
 
             return report.toString();
-        } else {
-            return WebCrawlerReportBuilder.getBrokenLinkReport(configuration);
+        } catch (WebServiceException wse) {
+            return WebCrawlerReportBuilder.getBrokenLinkReport(configuration, wse.getMessage());
         }
     }
 
-    public Webpage loadWebpage(String url) {
+    public Webpage loadWebpage(String url) throws WebServiceException {
         return WebService.loadWebpage(url);
     }
 
@@ -70,7 +71,7 @@ public class WebCrawler {
         List<Heading> translatedHeadings = new ArrayList<>();
         try {
             for (Heading heading : headings) {
-                Heading translatedHeading = new Heading(translatorService.translate(heading.getText(), App.targetLanguage), heading.getOrder());
+                Heading translatedHeading = new Heading(translatorService.translate(heading.getText(), App.getTargetLanguage()), heading.getOrder());
                 translatedHeadings.add(translatedHeading);
             }
 
@@ -97,7 +98,7 @@ public class WebCrawler {
     }
 
     public String processLinks(Set<String> links, WebCrawlerConfig configuration) {
-        if (configuration.getDepth() >= App.maxDepth) {
+        if (configuration.getDepth() >= App.getMaxDepth()) {
             return "";
         }
 

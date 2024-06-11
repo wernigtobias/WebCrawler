@@ -9,10 +9,10 @@ import java.util.Scanner;
 public class App {
 
     static Scanner scanner;
-    public static int maxDepth;
-    public static String[] urls;
-    public static String[] domains;
-    public static String targetLanguage;
+    private static int maxDepth;
+    private static String[] urls;
+    private static String[] domains;
+    private static String targetLanguage;
 
     public static void main(String[] args) {
         TranslatorService translatorService = new TranslatorServiceImpl();
@@ -26,15 +26,11 @@ public class App {
 
     private static void readUserInput(TranslatorService translatorService){
         scanner = new Scanner(System.in);
-        //String[] urls = readURLs();
-        urls = new String[]{"https://endlessblue.pixelbay.at"};
-        //maxDepth = readDepth();
-        maxDepth = 3;
-        //String[] domains = readDomains();
-        domains = new String[]{"ecockpit.at", "pixelbay.at"};
 
-        //targetLanguage = readLanguage(translatorService);
-        targetLanguage = "spanish";
+        urls = readURLs();
+        maxDepth = readDepth();
+        domains = readDomains();
+        targetLanguage = readLanguage(translatorService);
 
         scanner.close();
     }
@@ -65,5 +61,17 @@ public class App {
 
         System.out.println("Wrong input. Please enter the wanted language in english.");
         return readLanguage(translatorService);
+    }
+
+    public static int getMaxDepth() {
+        return maxDepth;
+    }
+
+    public static void setMaxDepth(int maxDepth) {
+        App.maxDepth = maxDepth;
+    }
+
+    public static String getTargetLanguage() {
+        return targetLanguage;
     }
 }
