@@ -1,5 +1,4 @@
 package at.aau.webcrawler.dto;
-import org.jsoup.select.Elements;
 
 import java.util.List;
 import java.util.Set;
@@ -31,16 +30,8 @@ public class WebCrawlerPageResult {
     return headings;
   }
 
-  public Set<String> getLinks() {
-    return links;
-  }
-
   public void setLinks(Set<String> links) {
     this.links = links;
-  }
-
-  public int getDepth() {
-    return depth;
   }
 
   public String getUrl() {
