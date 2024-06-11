@@ -7,6 +7,4 @@ public interface Webpage {
     List<Heading> getHeadings();
 
     Set<String> getLinks();
-
-    String getSourceLanguage();
 }
