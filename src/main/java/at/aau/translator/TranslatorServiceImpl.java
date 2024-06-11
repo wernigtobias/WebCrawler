@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class TranslatorServiceImpl implements TranslatorService {
     private final static Map<String, String> languagesWithAbbreviations = createLanguagesWithAbbreviations();
-    private final static String KEY = "ffcf521a95msh0e0ee2204194697p1b2be2jsnba7b6c532eea";
+    private final static String KEY = "";
     private OkHttpClient client = new OkHttpClient();
 
 
